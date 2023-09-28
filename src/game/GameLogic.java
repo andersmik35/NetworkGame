@@ -1,5 +1,8 @@
 package game;
 
+import game.model.Pair;
+import game.model.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,7 +49,7 @@ public class GameLogic {
         me.setDirection(direction);
         int x = me.getXpos(), y = me.getYpos();
 
-        if (Generel.board[y + deltaY].charAt(x + deltaX) == 'w') {
+        if (isWall(x + deltaX, y + deltaY)) {
             me.addPoints(-1);
         } else {
             // collision detection
@@ -77,5 +80,7 @@ public class GameLogic {
         return null;
     }
 
-
+    public static boolean isWall(int x, int y) {
+        return Generel.board[y].charAt(x) == 'w';
+    }
 }

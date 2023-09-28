@@ -1,5 +1,7 @@
 package game;
 
+import game.model.Pair;
+import game.model.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -147,7 +149,6 @@ public class Gui extends Application {
         removePlayerOnScreen(oldpos);
         placePlayerOnScreen(newpos, direction);
     }
-
 
     public void updateScoreTable() {
         Platform.runLater(() -> {

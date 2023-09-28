@@ -1,5 +1,7 @@
 package game;
 
+import game.model.Player;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
