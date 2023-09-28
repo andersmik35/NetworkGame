@@ -1,4 +1,4 @@
-package game.model;
+package game.server.model;
 
 public class Player {
     private final String name;
@@ -47,6 +47,10 @@ public class Player {
 
     public void addPoints(int p) {
         point += p;
+    }
+
+    public String serializePlayer() {
+        return name + ":" + location.getX() + ":" + location.getY() + ":" + direction + ":" + point;
     }
 
     public String toString() {

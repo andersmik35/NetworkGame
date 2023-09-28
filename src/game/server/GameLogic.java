@@ -1,7 +1,9 @@
-package game;
+package game.server;
 
-import game.model.Pair;
-import game.model.Player;
+import game.client.Generel;
+import game.client.Gui;
+import game.server.model.Pair;
+import game.server.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +14,14 @@ public class GameLogic {
     public static List<Player> players = new ArrayList<Player>();
     public static Player me;
 
-    public static void makePlayers(String name) {
+    public static void makePlayers(String name, ServerThread serverThread) {
         Pair p = getRandomFreePosition();
         me = new Player(name, p, "up");
         players.add(me);
-        p = getRandomFreePosition();
-        Player harry = new Player("Kaj", p, "up");
-        players.add(harry);
+
+        new ClientHandler(me, serverThread);
+
+        ClientHandler.sendStateToAll();
     }
 
     // finds a random new position which is not wall
@@ -61,12 +64,18 @@ public class GameLogic {
                 Pair pa = getRandomFreePosition();
                 p.setLocation(pa);
                 Pair oldpos = new Pair(x + deltaX, y + deltaY);
-                Gui.movePlayerOnScreen(oldpos, pa, p.getDirection());
+
+//                Gui.movePlayerOnScreen(oldpos, pa, p.getDirection());
+                ClientHandler.sendStateToAll();
+
             } else
                 me.addPoints(1);
             Pair oldpos = me.getLocation();
             Pair newpos = new Pair(x + deltaX, y + deltaY);
-            Gui.movePlayerOnScreen(oldpos, newpos, direction);
+
+//            Gui.movePlayerOnScreen(oldpos, newpos, direction);
+            // Send besked til spillere om at spilleren er flyttet
+
             me.setLocation(newpos);
         }
     }

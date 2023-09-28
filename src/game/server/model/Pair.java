@@ -1,4 +1,4 @@
-package game.model;
+package game.server.model;
 
 public class Pair {
     private int x;
