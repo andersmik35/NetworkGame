@@ -49,8 +49,8 @@ public class Player {
         point += p;
     }
 
-    public String serializePlayer() {
-        return name + ":" + location.getX() + ":" + location.getY() + ":" + direction + ":" + point;
+    public String serializePlayer(Pair oldPos) {
+        return name + ":" + oldPos.getX() + ":" + oldPos.getY() + ":" + location.getX() + ":" + location.getY() + ":" + direction + ":" + point;
     }
 
     public String toString() {

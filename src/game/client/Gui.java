@@ -153,7 +153,7 @@ public class Gui extends Application {
     public void playerMoved(int deltaX, int deltaY, String direction) {
         // Send besked til serveren om at spilleren er flyttet
         try {
-            TCPClient.getInstance().send(deltaX + " " + deltaY + " " + direction);
+            TCPClient.getInstance().send("move:" + deltaX + ":" + deltaY + ":" + direction);
         } catch (Exception e) {
             e.printStackTrace();
         }

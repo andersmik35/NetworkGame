@@ -12,16 +12,18 @@ import java.util.Random;
 
 public class GameLogic {
     public static List<Player> players = new ArrayList<Player>();
-    public static Player me;
 
-    public static void makePlayers(String name, ServerThread serverThread) {
+    public static Player makePlayers(String name, ServerThread serverThread) {
         Pair p = getRandomFreePosition();
-        me = new Player(name, p, "up");
+        Player me = new Player(name, p, "up");
         players.add(me);
 
         new ClientHandler(me, serverThread);
 
-        ClientHandler.sendStateToAll();
+        String state = me.serializePlayer(p);
+        ClientHandler.sendStateToAll(state);
+
+        return me;
     }
 
     // finds a random new position which is not wall
@@ -48,7 +50,7 @@ public class GameLogic {
         return p;
     }
 
-    public static void updatePlayer(int deltaX, int deltaY, String direction) {
+    public static void updatePlayer(Player me, int deltaX, int deltaY, String direction) {
         me.setDirection(direction);
         int x = me.getXpos(), y = me.getYpos();
 
@@ -56,27 +58,30 @@ public class GameLogic {
             me.addPoints(-1);
         } else {
             // collision detection
-            Player p = getPlayerAt(x + deltaX, y + deltaY);
-            if (p != null) {
+            Player other = getPlayerAt(x + deltaX, y + deltaY);
+
+            if (other != null) {
                 me.addPoints(10);
                 //update the other player
-                p.addPoints(-10);
+                other.addPoints(-10);
                 Pair pa = getRandomFreePosition();
-                p.setLocation(pa);
+                other.setLocation(pa);
                 Pair oldpos = new Pair(x + deltaX, y + deltaY);
 
-//                Gui.movePlayerOnScreen(oldpos, pa, p.getDirection());
-                ClientHandler.sendStateToAll();
-
+                // Send besked til spillere om at spilleren er flyttet
+                String state = other.serializePlayer(oldpos);
+                ClientHandler.sendStateToAll(state);
             } else
                 me.addPoints(1);
+
             Pair oldpos = me.getLocation();
             Pair newpos = new Pair(x + deltaX, y + deltaY);
 
-//            Gui.movePlayerOnScreen(oldpos, newpos, direction);
-            // Send besked til spillere om at spilleren er flyttet
-
             me.setLocation(newpos);
+
+            // Send besked til spillere om at spilleren er flyttet
+            String state = me.serializePlayer(oldpos);
+            ClientHandler.sendStateToAll(state);
         }
     }
 

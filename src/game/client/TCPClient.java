@@ -7,35 +7,43 @@ import java.net.*;
 import java.util.Arrays;
 
 public class TCPClient extends Thread {
-    private Socket socket;
-    private String name;
+    private final Socket socket;
+    private final String name;
 
     private static TCPClient instance;
 
     public TCPClient(String ip, String name) throws Exception {
         instance = this;
-        socket = new Socket(ip, 6789);
+
         this.name = name;
+        this.socket = new Socket(ip, 6789);
     }
 
     @Override
     public void run() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        while (true) {
-            try {
-                String msg = inFromUser.readLine();
-                System.out.println("raw: " + msg);
-                updateGui(msg);
-            } catch (Exception e) {
-                e.printStackTrace();
+            DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+            outToServer.writeBytes(name + '\n');
+
+            while (socket.isConnected()) {
+                String serverSentence = inFromServer.readLine();
+                System.out.println("SERVER: " + serverSentence);
+
+                if (serverSentence.startsWith("state:")) {
+                    String serializedPlayers = serverSentence.substring(6);
+                    updateGui(serializedPlayers);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -47,16 +55,21 @@ public class TCPClient extends Thread {
     private void updateGui(String serializedPlayers) {
         String[] players = serializedPlayers.split(",");
         System.out.println("Players: " + Arrays.toString(players));
+
         for (String player : players) {
-            player = player.substring(1, player.length() - 1);
+            player = player.substring(0, player.length() - 1);
             String[] playerInfo = player.split(":");
 
             System.out.println(Arrays.toString(playerInfo));
-            int x = Integer.parseInt(playerInfo[1]);
-            int y = Integer.parseInt(playerInfo[2]);
+            int oldX = Integer.parseInt(playerInfo[1]);
+            int oldY = Integer.parseInt(playerInfo[2]);
+            int newX = Integer.parseInt(playerInfo[3]);
+            int newY = Integer.parseInt(playerInfo[4]);
 
-            Pair newPos = new Pair(x, y);
-            Gui.placePlayerOnScreen(newPos, playerInfo[3]);
+            Pair oldPos = new Pair(oldX, oldY);
+            Pair newPos = new Pair(newX, newY);
+
+            Gui.movePlayerOnScreen(oldPos, newPos, playerInfo[5]);
         }
     }
 

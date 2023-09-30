@@ -17,15 +17,15 @@ public class ClientHandler {
         clientHandlers.add(this);
     }
 
-    public static void sendStateToAll() {
+    public static void sendStateToAll(String state) {
         for (ClientHandler clientHandler : clientHandlers) {
-            clientHandler.updateState();
+            clientHandler.updateState(state);
         }
     }
 
-    private void updateState() {
+    private void updateState(String state) {
         try {
-            serverThread.updateState();
+            serverThread.updateState(state);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
