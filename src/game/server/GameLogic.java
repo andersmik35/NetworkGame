@@ -18,7 +18,7 @@ public class GameLogic {
         Player me = new Player(name, p, "up");
         players.add(me);
 
-        new ClientHandler(me, serverThread);
+        new ClientHandler(serverThread);
 
         String state = me.serializePlayer(p);
         ClientHandler.sendStateToAll(state);
