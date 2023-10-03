@@ -55,22 +55,30 @@ public class TCPClient extends Thread {
     private void updateGui(String serializedPlayers) {
         String[] players = serializedPlayers.split(",");
 
-        for (String player : players) {
-            player = player.substring(0, player.length() - 1);
+        PlayerUpdate[] updates = new PlayerUpdate[players.length];
+        for (int i = 0; i < players.length; i++) {
+            String player = players[i];
+            //player = player.substring(0, player.length() - 1);
             String[] playerInfo = player.split(":");
 
             System.out.println(Arrays.toString(playerInfo));
+            String name = playerInfo[0];
+            String direction = playerInfo[5];
+
             int oldX = Integer.parseInt(playerInfo[1]);
             int oldY = Integer.parseInt(playerInfo[2]);
             int newX = Integer.parseInt(playerInfo[3]);
             int newY = Integer.parseInt(playerInfo[4]);
 
+            int points = Integer.parseInt(playerInfo[6]);
+
             Pair oldPos = new Pair(oldX, oldY);
             Pair newPos = new Pair(newX, newY);
 
-            Gui.movePlayerOnScreen(oldPos, newPos, playerInfo[5]);
-            Gui.updateScoreTable();
+            updates[i] = new PlayerUpdate(name,oldPos,newPos,direction,points);
         }
+
+        Gui.updateGui(updates);
     }
 
     public static TCPClient getInstance() {

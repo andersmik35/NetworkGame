@@ -8,11 +8,9 @@ import java.util.Set;
 
 public class ClientHandler {
     private static final Set<ClientHandler> clientHandlers = new HashSet<>();
-    private final Player player;
     private final ServerThread serverThread;
 
-    public ClientHandler(Player player, ServerThread serverThread) {
-        this.player = player;
+    public ClientHandler(ServerThread serverThread) {
         this.serverThread = serverThread;
         clientHandlers.add(this);
     }
