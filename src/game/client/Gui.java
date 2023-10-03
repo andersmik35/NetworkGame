@@ -24,7 +24,7 @@ public class Gui extends Application {
 
 
     private static Label[][] fields;
-    private TextArea scoreList;
+    private static TextArea scoreList;
 
     // -------------------------------------------
     // | Maze: (0,0)              | Score: (1,0) |
@@ -74,6 +74,7 @@ public class Gui extends Application {
                 boardGrid.add(fields[i][j], i, j);
             }
         }
+        System.out.println("Board created");
         scoreList.setEditable(false);
 
         grid.add(mazeLabel, 0, 0);
@@ -107,10 +108,10 @@ public class Gui extends Application {
         });
 
         // Putting default players on screen
-//            for (int i = 0; i < GameLogic.players.size(); i++) {
-//                fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
-//            }
-//            scoreList.setText(getScoreList());
+        for (int i = 0; i < GameLogic.players.size(); i++) {
+            fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
+        }
+        scoreList.setText(getScoreList());
     }
 
     public static void removePlayerOnScreen(Pair oldpos) {
@@ -144,7 +145,7 @@ public class Gui extends Application {
         placePlayerOnScreen(newpos, direction);
     }
 
-    public void updateScoreTable() {
+    public static void updateScoreTable() {
         Platform.runLater(() -> {
             scoreList.setText(getScoreList());
         });
@@ -159,7 +160,7 @@ public class Gui extends Application {
         }
     }
 
-    public String getScoreList() {
+    private static String getScoreList() {
         StringBuffer b = new StringBuffer(100);
         for (Player p : GameLogic.players) {
             b.append(p + "\r\n");

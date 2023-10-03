@@ -22,7 +22,7 @@ public class TCPClient extends Thread {
     @Override
     public void run() {
         try {
-            Thread.sleep(4000);
+            sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -54,7 +54,6 @@ public class TCPClient extends Thread {
 
     private void updateGui(String serializedPlayers) {
         String[] players = serializedPlayers.split(",");
-        System.out.println("Players: " + Arrays.toString(players));
 
         for (String player : players) {
             player = player.substring(0, player.length() - 1);
@@ -70,6 +69,7 @@ public class TCPClient extends Thread {
             Pair newPos = new Pair(newX, newY);
 
             Gui.movePlayerOnScreen(oldPos, newPos, playerInfo[5]);
+            Gui.updateScoreTable();
         }
     }
 
