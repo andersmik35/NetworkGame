@@ -1,30 +1,34 @@
 package game.client;
 
 import game.server.GameLogic;
-import game.server.model.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
 
 public class Gui extends Application {
-    public static final int size = 30;
-    public static final int scene_height = size * 20 + 50;
-    public static final int scene_width = size * 20 + 200;
+    private static PlayerUpdate[] Players = new PlayerUpdate[0];
 
-    public static Image image_floor;
-    public static Image image_wall;
-    public static Image hero_right, hero_left, hero_up, hero_down;
+    public static final int SIZE = 30;
+    public static final int SCENE_HEIGHT = SIZE * 20 + 50;
+    public static final int SCENE_WIDTH = SIZE * 20 + 200;
+
+    public static Image ImageFloor;
+    public static Image ImageWall;
+    public static Image HeroRight, HeroLeft, HeroUp, HeroDown;
 
 
-    private static Label[][] fields;
-    private static TextArea scoreList;
+    private static Label[][] Fields;
+    private static TextArea ScoreList;
 
     // -------------------------------------------
     // | Maze: (0,0)              | Score: (1,0) |
@@ -46,43 +50,43 @@ public class Gui extends Application {
         Text scoreLabel = new Text("Score:");
         scoreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
-        scoreList = new TextArea();
+        ScoreList = new TextArea();
 
         GridPane boardGrid = new GridPane();
 
-        image_wall = new Image(getClass().getResourceAsStream("Image/wall4.png"), size, size, false, false);
-        image_floor = new Image(getClass().getResourceAsStream("Image/floor1.png"), size, size, false, false);
+        ImageWall = new Image(getClass().getResourceAsStream("Image/wall4.png"), SIZE, SIZE, false, false);
+        ImageFloor = new Image(getClass().getResourceAsStream("Image/floor1.png"), SIZE, SIZE, false, false);
 
-        hero_right = new Image(getClass().getResourceAsStream("Image/heroRight.png"), size, size, false, false);
-        hero_left = new Image(getClass().getResourceAsStream("Image/heroLeft.png"), size, size, false, false);
-        hero_up = new Image(getClass().getResourceAsStream("Image/heroUp.png"), size, size, false, false);
-        hero_down = new Image(getClass().getResourceAsStream("Image/heroDown.png"), size, size, false, false);
+        HeroRight = new Image(getClass().getResourceAsStream("Image/heroRight.png"), SIZE, SIZE, false, false);
+        HeroLeft = new Image(getClass().getResourceAsStream("Image/heroLeft.png"), SIZE, SIZE, false, false);
+        HeroUp = new Image(getClass().getResourceAsStream("Image/heroUp.png"), SIZE, SIZE, false, false);
+        HeroDown = new Image(getClass().getResourceAsStream("Image/heroDown.png"), SIZE, SIZE, false, false);
 
-        fields = new Label[20][20];
+        Fields = new Label[20][20];
         for (int j = 0; j < 20; j++) {
             for (int i = 0; i < 20; i++) {
                 switch (Generel.board[j].charAt(i)) {
                     case 'w':
-                        fields[i][j] = new Label("", new ImageView(image_wall));
+                        Fields[i][j] = new Label("", new ImageView(ImageWall));
                         break;
                     case ' ':
-                        fields[i][j] = new Label("", new ImageView(image_floor));
+                        Fields[i][j] = new Label("", new ImageView(ImageFloor));
                         break;
                     default:
                         throw new Exception("Illegal field value: " + Generel.board[j].charAt(i));
                 }
-                boardGrid.add(fields[i][j], i, j);
+                boardGrid.add(Fields[i][j], i, j);
             }
         }
         System.out.println("Board created");
-        scoreList.setEditable(false);
+        ScoreList.setEditable(false);
 
         grid.add(mazeLabel, 0, 0);
         grid.add(scoreLabel, 1, 0);
         grid.add(boardGrid, 0, 1);
-        grid.add(scoreList, 1, 1);
+        grid.add(ScoreList, 1, 1);
 
-        Scene scene = new Scene(grid, scene_width, scene_height);
+        Scene scene = new Scene(grid, SCENE_WIDTH, SCENE_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -108,15 +112,15 @@ public class Gui extends Application {
         });
 
         // Putting default players on screen
-        //for (int i = 0; i < GameLogic.players.size(); i++) {
-         //   fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(hero_up));
-        //}
-        //scoreList.setText(getScoreList());
+        for (int i = 0; i < GameLogic.players.size(); i++) {
+            Fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(HeroUp));
+        }
+        ScoreList.setText(getScoreList());
     }
 
     public static void removePlayerOnScreen(Pair oldpos) {
         Platform.runLater(() -> {
-            fields[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(image_floor));
+            Fields[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(ImageFloor));
         });
     }
 
@@ -125,29 +129,24 @@ public class Gui extends Application {
             int newx = newpos.getX();
             int newy = newpos.getY();
             if (direction.equals("right")) {
-                fields[newx][newy].setGraphic(new ImageView(hero_right));
+                Fields[newx][newy].setGraphic(new ImageView(HeroRight));
             }
 
             if (direction.equals("left")) {
-                fields[newx][newy].setGraphic(new ImageView(hero_left));
+                Fields[newx][newy].setGraphic(new ImageView(HeroLeft));
             }
             if (direction.equals("up")) {
-                fields[newx][newy].setGraphic(new ImageView(hero_up));
+                Fields[newx][newy].setGraphic(new ImageView(HeroUp));
             }
             if (direction.equals("down")) {
-                fields[newx][newy].setGraphic(new ImageView(hero_down));
+                Fields[newx][newy].setGraphic(new ImageView(HeroDown));
             }
         });
     }
 
-    public static void movePlayerOnScreen(Pair oldpos, Pair newpos, String direction) {
-        removePlayerOnScreen(oldpos);
-        placePlayerOnScreen(newpos, direction);
-    }
-
-    public static void updateScoreTable(PlayerUpdate[] players) {
+    public static void updateScoreTable() {
         Platform.runLater(() -> {
-            scoreList.setText(getScoreList(players));
+            ScoreList.setText(getScoreList());
         });
     }
 
@@ -160,20 +159,25 @@ public class Gui extends Application {
         }
     }
 
-    private static String getScoreList(PlayerUpdate[] players) {
+    private static String getScoreList() {
         StringBuffer b = new StringBuffer(100);
-        for (PlayerUpdate p : players) {
+        for (PlayerUpdate p : Players) {
             b.append(p + "\r\n");
         }
         return b.toString();
     }
 
     public static void updateGui(PlayerUpdate[] players) {
-        for(PlayerUpdate p : players){
-            movePlayerOnScreen(p.getOldPos(), p.getNewPos(), p.getDirection());
+        for (PlayerUpdate oldP : Players) {
+            removePlayerOnScreen(oldP.getPos());
         }
 
-        updateScoreTable(players);
+        for (PlayerUpdate p : players) {
+            placePlayerOnScreen(p.getPos(), p.getDirection());
+        }
+
+        Players = players;
+        updateScoreTable();
     }
 }
 

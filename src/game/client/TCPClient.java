@@ -3,6 +3,7 @@ package game.client;
 import game.client.Pair;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
 import java.util.Arrays;
 
@@ -54,30 +55,28 @@ public class TCPClient extends Thread {
 
     private void updateGui(String serializedPlayers) {
         String[] players = serializedPlayers.split(",");
-
         PlayerUpdate[] updates = new PlayerUpdate[players.length];
+
         for (int i = 0; i < players.length; i++) {
             String player = players[i];
-            //player = player.substring(0, player.length() - 1);
+            player = player.substring(1, player.length() - 1);
+
             String[] playerInfo = player.split(":");
 
             System.out.println(Arrays.toString(playerInfo));
             String name = playerInfo[0];
-            String direction = playerInfo[5];
+            String direction = playerInfo[3];
 
-            int oldX = Integer.parseInt(playerInfo[1]);
-            int oldY = Integer.parseInt(playerInfo[2]);
-            int newX = Integer.parseInt(playerInfo[3]);
-            int newY = Integer.parseInt(playerInfo[4]);
-
-            int points = Integer.parseInt(playerInfo[6]);
-
-            Pair oldPos = new Pair(oldX, oldY);
+            int newX = Integer.parseInt(playerInfo[1]);
+            int newY = Integer.parseInt(playerInfo[2]);
             Pair newPos = new Pair(newX, newY);
 
-            updates[i] = new PlayerUpdate(name,oldPos,newPos,direction,points);
+            int points = Integer.parseInt(playerInfo[4]);
+
+            updates[i] = new PlayerUpdate(name, newPos, direction, points);
         }
 
+        System.out.println(Arrays.toString(updates));
         Gui.updateGui(updates);
     }
 

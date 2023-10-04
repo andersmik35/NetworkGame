@@ -20,8 +20,7 @@ public class GameLogic {
 
         new ClientHandler(serverThread);
 
-        String state = me.serializePlayer(p);
-        ClientHandler.sendStateToAll(state);
+        sendState();
 
         return me;
     }
@@ -54,6 +53,8 @@ public class GameLogic {
         me.setDirection(direction);
         int x = me.getXpos(), y = me.getYpos();
 
+        Pair oldPos = me.getLocation();
+
         if (isWall(x + deltaX, y + deltaY)) {
             me.addPoints(-1);
         } else {
@@ -66,23 +67,33 @@ public class GameLogic {
                 other.addPoints(-10);
                 Pair pa = getRandomFreePosition();
                 other.setLocation(pa);
-                Pair oldpos = new Pair(x + deltaX, y + deltaY);
-
-                // Send besked til spillere om at spilleren er flyttet
-                String state = other.serializePlayer(oldpos);
-                ClientHandler.sendStateToAll(state);
+                oldPos = new Pair(x + deltaX, y + deltaY);
             } else
                 me.addPoints(1);
 
-            Pair oldpos = me.getLocation();
+            oldPos = me.getLocation();
             Pair newpos = new Pair(x + deltaX, y + deltaY);
 
             me.setLocation(newpos);
-
-            // Send besked til spillere om at spilleren er flyttet
-            String state = me.serializePlayer(oldpos);
-            ClientHandler.sendStateToAll(state);
         }
+
+        // Send besked til spillere om at spilleren er flyttet
+        sendState();
+    }
+
+    private static void sendState() {
+        StringBuilder state = new StringBuilder();
+        for (int i = 0; i < players.size(); i++) {
+            Player p = players.get(i);
+            String serializedPlayer = p.serializePlayer();
+
+            if (i == players.size() - 1)
+                state.append(serializedPlayer);
+            else
+                state.append(serializedPlayer).append(",");
+        }
+
+        ClientHandler.sendStateToAll(state.toString());
     }
 
     public static Player getPlayerAt(int x, int y) {

@@ -1,5 +1,6 @@
 package game.client;
 
+
 import javafx.application.Application;
 
 import java.io.BufferedReader;
