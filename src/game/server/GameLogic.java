@@ -108,4 +108,9 @@ public class GameLogic {
     public static boolean isWall(int x, int y) {
         return Generel.board[y].charAt(x) == 'w';
     }
+
+    public static void removePlayer(Player player) {
+        players.remove(player);
+        sendState();
+    }
 }

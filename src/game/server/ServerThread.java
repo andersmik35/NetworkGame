@@ -48,6 +48,9 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        finally {
+            GameLogic.removePlayer(player);
+        }
     }
 
     public void updateState(String state) throws IOException {
