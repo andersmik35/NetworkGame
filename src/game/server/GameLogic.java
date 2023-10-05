@@ -26,6 +26,7 @@ public class GameLogic {
 
     private List<Player> players = new ArrayList<Player>();
 
+    private Pair treasure = null;
 
     public Player makePlayers(String name) {
         Pair p = getRandomFreePosition();
@@ -66,6 +67,11 @@ public class GameLogic {
 
         Pair oldPos = me.getLocation();
 
+        if (isTreasure(x + deltaX, y + deltaY)) {
+            me.addPoints(10);
+            treasure = null;
+        }
+
         if (isWall(x + deltaX, y + deltaY)) {
             me.addPoints(-1);
         } else {
@@ -79,8 +85,7 @@ public class GameLogic {
                 Pair pa = getRandomFreePosition();
                 other.setLocation(pa);
                 oldPos = new Pair(x + deltaX, y + deltaY);
-            } else
-                me.addPoints(1);
+            }
 
             oldPos = me.getLocation();
             Pair newpos = new Pair(x + deltaX, y + deltaY);
@@ -89,8 +94,11 @@ public class GameLogic {
         }
 
         // Send besked til spillere om at spilleren er flyttet
-//        System.out.println(me.getName());
         sendState();
+    }
+
+    private boolean isTreasure(int i, int i1) {
+        return treasure != null && treasure.getX() == i && treasure.getY() == i1;
     }
 
     private void sendState() {
@@ -103,6 +111,11 @@ public class GameLogic {
                 state.append(serializedPlayer);
             else
                 state.append(serializedPlayer).append(",");
+        }
+
+        if (treasure != null) {
+            state.append(";");
+            state.append(treasure.getX()).append(",").append(treasure.getY());
         }
 
         ClientHandler.sendStateToAll(state.toString());
@@ -128,5 +141,24 @@ public class GameLogic {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public void treasureSpawner() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    int min = 3, max = 6;
+                    int random = (int) (Math.random() * (max - min + 1) + min);
+                    Thread.sleep(1000L * random);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (treasure == null) {
+                    treasure = getRandomFreePosition();
+                    sendState();
+                }
+            }
+        }).start();
     }
 }

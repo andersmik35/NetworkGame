@@ -48,7 +48,9 @@ public class ServerThread extends Thread {
                     int y = Integer.parseInt(parts[2]);
                     String direction = parts[3];
 
-                    GameLogic.getInstance().updatePlayer(player, x, y, direction);
+                    synchronized (GameLogic.getInstance()) {
+                        GameLogic.getInstance().updatePlayer(player, x, y, direction);
+                    }
                 }
             }
 

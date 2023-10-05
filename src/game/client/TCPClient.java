@@ -40,8 +40,9 @@ public class TCPClient extends Thread {
                 System.out.println("SERVER: " + serverSentence);
 
                 if (serverSentence.startsWith("state:")) {
-                    String serializedPlayers = serverSentence.substring(6);
-                    updateGui(serializedPlayers);
+                    String gameData = serverSentence.substring(6);
+                    // { "player1":0:0:"right":0 },{ "player2":3:5:"up":1 };6,4
+                    updateGui(gameData);
                 }
             }
         } catch (IOException e) {
@@ -61,6 +62,10 @@ public class TCPClient extends Thread {
         String[] players = serializedPlayers.split(",");
         PlayerUpdate[] updates = new PlayerUpdate[players.length];
 
+        String[] treasure = players[players.length - 1].split(";");
+
+        players[players.length - 1] = treasure[0];
+
         for (int i = 0; i < players.length; i++) {
             String player = players[i];
             player = player.substring(1, player.length() - 1);
@@ -77,6 +82,15 @@ public class TCPClient extends Thread {
             int points = Integer.parseInt(playerInfo[4]);
 
             updates[i] = new PlayerUpdate(name, newPos, direction, points);
+        }
+
+        if (treasure.length > 1) {
+            String[] treasurePos = treasure[1].split(",");
+            int treasureX = Integer.parseInt(treasurePos[0]);
+            int treasureY = Integer.parseInt(treasurePos[1]);
+            Pair treasurePair = new Pair(treasureX, treasureY);
+
+            Gui.placeTreasureOnScreen(treasurePair);
         }
 
         Gui.updateGui(updates);

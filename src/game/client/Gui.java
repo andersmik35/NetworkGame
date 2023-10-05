@@ -28,6 +28,7 @@ public class Gui extends Application {
     public static Image ImageFloor;
     public static Image ImageWall;
     public static Image HeroRight, HeroLeft, HeroUp, HeroDown;
+    public static Image ImageTreasure;
 
 
     private static Label[][] Fields;
@@ -64,6 +65,8 @@ public class Gui extends Application {
         HeroLeft = new Image(getClass().getResourceAsStream("Image/heroLeft.png"), SIZE, SIZE, false, false);
         HeroUp = new Image(getClass().getResourceAsStream("Image/heroUp.png"), SIZE, SIZE, false, false);
         HeroDown = new Image(getClass().getResourceAsStream("Image/heroDown.png"), SIZE, SIZE, false, false);
+
+        ImageTreasure = new Image(getClass().getResourceAsStream("Image/treasure.png"), SIZE, SIZE, false, false);
 
         Fields = new Label[20][20];
         for (int j = 0; j < 20; j++) {
@@ -122,9 +125,15 @@ public class Gui extends Application {
         ScoreList.setText(getScoreList());
     }
 
-    public static void removePlayerOnScreen(Pair oldpos) {
+    public static void removeObjectOnScreen(Pair oldpos) {
         Platform.runLater(() -> {
             Fields[oldpos.getX()][oldpos.getY()].setGraphic(new ImageView(ImageFloor));
+        });
+    }
+
+    public static void placeTreasureOnScreen(Pair pos) {
+        Platform.runLater(() -> {
+            Fields[pos.getX()][pos.getY()].setGraphic(new ImageView(ImageTreasure));
         });
     }
 
@@ -169,7 +178,7 @@ public class Gui extends Application {
 
     public static void updateGui(PlayerUpdate[] players) {
         for (PlayerUpdate oldP : Players) {
-            removePlayerOnScreen(oldP.getPos());
+            removeObjectOnScreen(oldP.getPos());
         }
 
         for (PlayerUpdate p : players) {
