@@ -63,7 +63,6 @@ public class TCPClient extends Thread {
 
             String[] playerInfo = player.split(":");
 
-            System.out.println(Arrays.toString(playerInfo));
             String name = playerInfo[0];
             String direction = playerInfo[3];
 
@@ -76,7 +75,6 @@ public class TCPClient extends Thread {
             updates[i] = new PlayerUpdate(name, newPos, direction, points);
         }
 
-        System.out.println(Arrays.toString(updates));
         Gui.updateGui(updates);
     }
 

@@ -13,13 +13,10 @@ import java.util.Random;
 public class GameLogic {
     public static List<Player> players = new ArrayList<Player>();
 
-    public static Player makePlayers(String name, ServerThread serverThread) {
+    public static Player makePlayers(String name) {
         Pair p = getRandomFreePosition();
         Player me = new Player(name, p, "up");
         players.add(me);
-
-        new ClientHandler(serverThread);
-
         sendState();
 
         return me;
@@ -104,6 +101,24 @@ public class GameLogic {
         }
         return null;
     }
+
+    private static void startTreasureSpawner() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Pair p = getRandomFreePosition();
+
+//                Generel.board[p.getY()].charAt(p.getX()) = 't';
+            }
+        }).start();
+    }
+
+
 
     public static boolean isWall(int x, int y) {
         return Generel.board[y].charAt(x) == 'w';

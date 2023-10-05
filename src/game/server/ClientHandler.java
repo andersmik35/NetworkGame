@@ -28,7 +28,8 @@ public class ClientHandler {
             throw new RuntimeException(e);
         }
     }
-    public void remove(){
+
+    public void stop() {
         clientHandlers.remove(this);
     }
 }

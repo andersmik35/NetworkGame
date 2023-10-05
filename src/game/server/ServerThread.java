@@ -11,6 +11,7 @@ import java.net.Socket;
 public class ServerThread extends Thread {
     private Socket connSocket;
     private Player player;
+    private ClientHandler clientHandler;
 
     private DataOutputStream outToClient;
 
@@ -26,15 +27,15 @@ public class ServerThread extends Thread {
             String name = inFromClient.readLine();
             System.out.println("Received from client: " + name);
 
-            player = GameLogic.makePlayers(name, this);
+            clientHandler = new ClientHandler(this);
+
+            player = GameLogic.makePlayers(name);
 
             // send welcome message
             outToClient.writeBytes("Welcome to the game " + name + "!\n");
 
             while (true) {
                 String clientSentence = inFromClient.readLine();
-                System.out.println(name + ": " + clientSentence);
-
                 if (clientSentence.startsWith("move:")) {
                     String[] parts = clientSentence.split(":");
 
@@ -47,15 +48,18 @@ public class ServerThread extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
-            GameLogic.removePlayer(player);
+        } finally {
+            try {
+                connSocket.close();
+                GameLogic.removePlayer(player);
+                clientHandler.stop();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void updateState(String state) throws IOException {
-        System.out.println("Sending state: " + state);
-
         outToClient.writeBytes("state:" + state + '\n');
     }
 }
