@@ -10,6 +10,8 @@ public class TCPClient extends Thread {
     private final Socket socket;
     private final String name;
 
+    private DataOutputStream outToServer;
+
     private static TCPClient instance;
 
     public TCPClient(String ip, String name) throws Exception {
@@ -30,7 +32,7 @@ public class TCPClient extends Thread {
         try {
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+            outToServer = new DataOutputStream(socket.getOutputStream());
             outToServer.writeBytes(name + '\n');
 
             while (socket.isConnected()) {
@@ -47,9 +49,12 @@ public class TCPClient extends Thread {
         }
     }
 
-    public void send(String msg) throws Exception {
-        DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
-        outToServer.writeBytes(msg + '\n');
+    public void send(String msg) {
+        try {
+            outToServer.writeBytes(msg + '\n');
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void updateGui(String serializedPlayers) {

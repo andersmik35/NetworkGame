@@ -1,6 +1,7 @@
 package game.client;
 
 import game.server.GameLogic;
+import game.server.model.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -14,6 +15,8 @@ import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.*;
+
+import java.util.List;
 
 public class Gui extends Application {
     private static PlayerUpdate[] Players = new PlayerUpdate[0];
@@ -111,9 +114,10 @@ public class Gui extends Application {
             }
         });
 
+        List<Player> players = GameLogic.getInstance().getPlayers();
         // Putting default players on screen
-        for (int i = 0; i < GameLogic.players.size(); i++) {
-            Fields[GameLogic.players.get(i).getXpos()][GameLogic.players.get(i).getYpos()].setGraphic(new ImageView(HeroUp));
+        for (Player player : players) {
+            Fields[player.getXpos()][player.getYpos()].setGraphic(new ImageView(HeroUp));
         }
         ScoreList.setText(getScoreList());
     }
@@ -152,11 +156,7 @@ public class Gui extends Application {
 
     public void playerMoved(int deltaX, int deltaY, String direction) {
         // Send besked til serveren om at spilleren er flyttet
-        try {
-            TCPClient.getInstance().send("move:" + deltaX + ":" + deltaY + ":" + direction);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        TCPClient.getInstance().send("move:" + deltaX + ":" + deltaY + ":" + direction);
     }
 
     private static String getScoreList() {

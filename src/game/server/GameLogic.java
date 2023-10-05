@@ -11,9 +11,23 @@ import java.util.Random;
 
 
 public class GameLogic {
-    public static List<Player> players = new ArrayList<Player>();
+    private static GameLogic instance;
 
-    public static Player makePlayers(String name) {
+    private GameLogic() {
+        instance = this;
+    }
+
+    public static GameLogic getInstance() {
+        if (instance == null) {
+            return new GameLogic();
+        }
+        return instance;
+    }
+
+    private List<Player> players = new ArrayList<Player>();
+
+
+    public Player makePlayers(String name) {
         Pair p = getRandomFreePosition();
         Player me = new Player(name, p, "up");
         players.add(me);
@@ -24,7 +38,7 @@ public class GameLogic {
 
     // finds a random new position which is not wall
     // and not occupied by other players
-    public static Pair getRandomFreePosition() {
+    public Pair getRandomFreePosition() {
         int x = 1;
         int y = 1;
         boolean foundFreePos = false;
@@ -46,7 +60,7 @@ public class GameLogic {
         return p;
     }
 
-    public static void updatePlayer(Player me, int deltaX, int deltaY, String direction) {
+    public void updatePlayer(Player me, int deltaX, int deltaY, String direction) {
         me.setDirection(direction);
         int x = me.getXpos(), y = me.getYpos();
 
@@ -75,10 +89,11 @@ public class GameLogic {
         }
 
         // Send besked til spillere om at spilleren er flyttet
+//        System.out.println(me.getName());
         sendState();
     }
 
-    private static void sendState() {
+    private void sendState() {
         StringBuilder state = new StringBuilder();
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
@@ -93,7 +108,7 @@ public class GameLogic {
         ClientHandler.sendStateToAll(state.toString());
     }
 
-    public static Player getPlayerAt(int x, int y) {
+    public Player getPlayerAt(int x, int y) {
         for (Player p : players) {
             if (p.getXpos() == x && p.getYpos() == y) {
                 return p;
@@ -102,30 +117,16 @@ public class GameLogic {
         return null;
     }
 
-    private static void startTreasureSpawner() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Pair p = getRandomFreePosition();
-
-//                Generel.board[p.getY()].charAt(p.getX()) = 't';
-            }
-        }).start();
-    }
-
-
-
     public static boolean isWall(int x, int y) {
         return Generel.board[y].charAt(x) == 'w';
     }
 
-    public static void removePlayer(Player player) {
+    public void removePlayer(Player player) {
         players.remove(player);
         sendState();
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 }

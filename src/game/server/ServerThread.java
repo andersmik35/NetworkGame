@@ -30,7 +30,7 @@ public class ServerThread extends Thread {
 
             clientHandler = new ClientHandler(this);
 
-            player = GameLogic.makePlayers(name);
+            player = GameLogic.getInstance().makePlayers(name);
 
             // send welcome message
             outToClient.writeBytes("Welcome to the game " + name + "!\n");
@@ -48,7 +48,7 @@ public class ServerThread extends Thread {
                     int y = Integer.parseInt(parts[2]);
                     String direction = parts[3];
 
-                    GameLogic.updatePlayer(player, x, y, direction);
+                    GameLogic.getInstance().updatePlayer(player, x, y, direction);
                 }
             }
 
@@ -59,7 +59,7 @@ public class ServerThread extends Thread {
         } finally {
             try {
                 clientHandler.stop();
-                GameLogic.removePlayer(player);
+                GameLogic.getInstance().removePlayer(player);
                 connSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
