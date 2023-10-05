@@ -34,8 +34,9 @@ public class ServerThread extends Thread {
             // send welcome message
             outToClient.writeBytes("Welcome to the game " + name + "!\n");
 
-            while (true) {
+            while (connSocket.isConnected()) {
                 String clientSentence = inFromClient.readLine();
+
                 if (clientSentence.startsWith("move:")) {
                     String[] parts = clientSentence.split(":");
 
@@ -46,13 +47,14 @@ public class ServerThread extends Thread {
                     GameLogic.updatePlayer(player, x, y, direction);
                 }
             }
+            System.out.println("Client disconnected: " + name);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                connSocket.close();
-                GameLogic.removePlayer(player);
                 clientHandler.stop();
+                GameLogic.removePlayer(player);
+                connSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,11 +1,10 @@
 package game.client;
 
-import game.client.Pair;
-
-import java.io.*;
-import java.lang.reflect.Array;
-import java.net.*;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 
 public class TCPClient extends Thread {
     private final Socket socket;
