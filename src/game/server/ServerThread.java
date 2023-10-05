@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ServerThread extends Thread {
     private Socket connSocket;
@@ -20,8 +21,8 @@ public class ServerThread extends Thread {
     }
 
     public void run() {
-        try {
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()));
+        try (BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connSocket.getInputStream()))) {
+
             outToClient = new DataOutputStream(connSocket.getOutputStream());
 
             String name = inFromClient.readLine();
@@ -34,8 +35,11 @@ public class ServerThread extends Thread {
             // send welcome message
             outToClient.writeBytes("Welcome to the game " + name + "!\n");
 
-            while (connSocket.isConnected()) {
+            while (!connSocket.isClosed()) {
                 String clientSentence = inFromClient.readLine();
+                if (clientSentence == null) {
+                    break;
+                }
 
                 if (clientSentence.startsWith("move:")) {
                     String[] parts = clientSentence.split(":");
@@ -47,7 +51,9 @@ public class ServerThread extends Thread {
                     GameLogic.updatePlayer(player, x, y, direction);
                 }
             }
-            System.out.println("Client disconnected: " + name);
+
+        } catch (SocketException se) {
+            System.out.println("Client disconnected: " + player.getName());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
