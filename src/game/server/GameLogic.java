@@ -7,6 +7,7 @@ import game.server.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -15,13 +16,11 @@ public class GameLogic {
 
     private GameLogic() {
         instance = this;
+        treasureSpawner();
     }
 
     public static GameLogic getInstance() {
-        if (instance == null) {
-            return new GameLogic();
-        }
-        return instance;
+        return Objects.requireNonNullElseGet(instance, GameLogic::new);
     }
 
     private List<Player> players = new ArrayList<Player>();
@@ -33,7 +32,6 @@ public class GameLogic {
         Player me = new Player(name, p, "up");
         players.add(me);
         sendState();
-
         return me;
     }
 
