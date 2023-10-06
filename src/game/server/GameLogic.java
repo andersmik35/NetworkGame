@@ -113,7 +113,7 @@ public class GameLogic {
 
         if (treasure != null) {
             state.append(";");
-            state.append(treasure.getX()).append(",").append(treasure.getY());
+            state.append(treasure.getX()).append(":").append(treasure.getY());
         }
 
         ClientHandler.sendStateToAll(state.toString());

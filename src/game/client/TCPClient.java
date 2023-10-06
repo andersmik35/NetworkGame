@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class TCPClient extends Thread {
     private final Socket socket;
@@ -58,8 +59,8 @@ public class TCPClient extends Thread {
         }
     }
 
-    private void updateGui(String serializedPlayers) {
-        String[] players = serializedPlayers.split(",");
+    private void updateGui(String serializedData) {
+        String[] players = serializedData.split(",");
         PlayerUpdate[] updates = new PlayerUpdate[players.length];
 
         String[] treasure = players[players.length - 1].split(";");
@@ -85,7 +86,7 @@ public class TCPClient extends Thread {
         }
 
         if (treasure.length > 1) {
-            String[] treasurePos = treasure[1].split(",");
+            String[] treasurePos = treasure[1].split(":");
             int treasureX = Integer.parseInt(treasurePos[0]);
             int treasureY = Integer.parseInt(treasurePos[1]);
             Pair treasurePair = new Pair(treasureX, treasureY);
