@@ -14,6 +14,11 @@ import java.util.Random;
 public class GameLogic {
     private static GameLogic instance;
 
+    private final static int TREASURE_POINTS = 10;
+    private final static int PLAYER_KILL_POINTS = 5;
+    private final static int PLAYER_DEATH_POINTS = -5;
+    private final static int WALL_POINTS = -1;
+
     private GameLogic() {
         instance = this;
         treasureSpawner();
@@ -63,32 +68,35 @@ public class GameLogic {
         me.setDirection(direction);
         int x = me.getXpos(), y = me.getYpos();
 
-        Pair oldPos = me.getLocation();
+        Pair oldPos;
 
         if (isTreasure(x + deltaX, y + deltaY)) {
-            me.addPoints(10);
+            me.addPoints(TREASURE_POINTS);
             treasure = null;
         }
 
         if (isWall(x + deltaX, y + deltaY)) {
-            me.addPoints(-1);
+            me.addPoints(WALL_POINTS);
         } else {
             // collision detection
             Player other = getPlayerAt(x + deltaX, y + deltaY);
 
             if (other != null) {
-                me.addPoints(10);
+                me.addPoints(PLAYER_KILL_POINTS);
                 //update the other player
-                other.addPoints(-10);
+                other.addPoints(PLAYER_DEATH_POINTS);
                 Pair pa = getRandomFreePosition();
-                other.setLocation(pa);
                 oldPos = new Pair(x + deltaX, y + deltaY);
+
+                other.setLocation(pa);
+                other.setOldLoc(oldPos);
             }
 
             oldPos = me.getLocation();
             Pair newpos = new Pair(x + deltaX, y + deltaY);
 
             me.setLocation(newpos);
+            me.setOldLoc(oldPos);
         }
 
         // Send besked til spillere om at spilleren er flyttet

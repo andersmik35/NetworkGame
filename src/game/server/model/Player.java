@@ -2,15 +2,24 @@ package game.server.model;
 
 public class Player {
     private final String name;
-    private Pair location;
+    private Pair location, oldLoc;
     private int point;
     private String direction;
 
     public Player(String name, Pair loc, String direction) {
         this.name = name;
         this.location = loc;
+        this.oldLoc = loc;
         this.direction = direction;
         this.point = 0;
+    }
+
+    public Pair getOldLoc() {
+        return oldLoc;
+    }
+
+    public void setOldLoc(Pair oldLoc) {
+        this.oldLoc = oldLoc;
     }
 
     public Pair getLocation() {
@@ -51,7 +60,7 @@ public class Player {
 
     public String serializePlayer() {
 //        return name + ":" + oldPos.getX() + ":" + oldPos.getY() + ":" + location.getX() + ":" + location.getY() + ":" + direction + ":" + point;
-        return "{" + name + ":" + location.getX() + ":" + location.getY() + ":" + direction + ":" + point + "}";
+        return "{" + name + ":" + oldLoc + ":" + location + ":" + direction + ":" + point + "}";
     }
 
     public String toString() {
