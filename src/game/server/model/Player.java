@@ -14,10 +14,6 @@ public class Player {
         this.point = 0;
     }
 
-    public Pair getOldLoc() {
-        return oldLoc;
-    }
-
     public void setOldLoc(Pair oldLoc) {
         this.oldLoc = oldLoc;
     }
@@ -34,20 +30,8 @@ public class Player {
         return location.getX();
     }
 
-    public void setXpos(int xpos) {
-        this.location.setX(xpos);
-    }
-
     public int getYpos() {
         return location.getY();
-    }
-
-    public void setYpos(int ypos) {
-        this.location.setY(ypos);
-    }
-
-    public String getDirection() {
-        return direction;
     }
 
     public void setDirection(String direction) {
@@ -59,7 +43,6 @@ public class Player {
     }
 
     public String serializePlayer() {
-//        return name + ":" + oldPos.getX() + ":" + oldPos.getY() + ":" + location.getX() + ":" + location.getY() + ":" + direction + ":" + point;
         return "{" + name + ":" + oldLoc + ":" + location + ":" + direction + ":" + point + "}";
     }
 
@@ -69,5 +52,9 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public int getPoints() {
+        return point;
     }
 }

@@ -44,6 +44,9 @@ public class TCPClient extends Thread {
                     String gameData = serverSentence.substring(6);
                     // { "player1":0:0:"right":0 },{ "player2":3:5:"up":1 };6,4
                     updateGui(gameData);
+                } else if (serverSentence.startsWith("WINNER:")) {
+                    String[] data = serverSentence.split(":");
+                    Gui.gameOver(data[1]);
                 }
             }
         } catch (IOException e) {

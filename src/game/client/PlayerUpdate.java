@@ -14,20 +14,12 @@ public class PlayerUpdate {
         this.points = points;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Pair getPos() {
         return newPos;
     }
 
     public String getDirection() {
         return direction;
-    }
-
-    public int getPoints() {
-        return points;
     }
 
     @Override

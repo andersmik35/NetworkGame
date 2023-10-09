@@ -18,6 +18,7 @@ public class GameLogic {
     private final static int PLAYER_KILL_POINTS = 5;
     private final static int PLAYER_DEATH_POINTS = -5;
     private final static int WALL_POINTS = -1;
+    private final static int POINTS_TO_WIN = 100;
 
     private GameLogic() {
         instance = this;
@@ -99,6 +100,11 @@ public class GameLogic {
             me.setOldLoc(oldPos);
         }
 
+        if (hasWon(me)) {
+            ClientHandler.sendStateToAll("WINNER:" + me.getName());
+            return;
+        }
+
         // Send besked til spillere om at spilleren er flyttet
         sendState();
     }
@@ -124,7 +130,7 @@ public class GameLogic {
             state.append(treasure.getX()).append(":").append(treasure.getY());
         }
 
-        ClientHandler.sendStateToAll(state.toString());
+        ClientHandler.sendStateToAll("state:" + state.toString());
     }
 
     public Player getPlayerAt(int x, int y) {
@@ -166,5 +172,9 @@ public class GameLogic {
                 }
             }
         }).start();
+    }
+
+    private boolean hasWon(Player player) {
+        return player.getPoints() >= POINTS_TO_WIN;
     }
 }

@@ -34,6 +34,16 @@ public class Gui extends Application {
     private static Label[][] Fields;
     private static TextArea ScoreList;
 
+    public static void gameOver(String winner) {
+        System.out.println("Game over, the winner was " + winner);
+        System.out.println("Leaderboard:");
+        for (PlayerUpdate p : Players) {
+            System.out.println(p + " points");
+        }
+
+        System.exit(0);
+    }
+
     // -------------------------------------------
     // | Maze: (0,0)              | Score: (1,0) |
     // |-----------------------------------------|

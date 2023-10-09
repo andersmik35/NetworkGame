@@ -29,7 +29,6 @@ public class ServerThread extends Thread {
             System.out.println("Received from client: " + name);
 
             clientHandler = new ClientHandler(this);
-
             player = GameLogic.getInstance().makePlayers(name);
 
             // send welcome message
@@ -70,6 +69,6 @@ public class ServerThread extends Thread {
     }
 
     public void updateState(String state) throws IOException {
-        outToClient.writeBytes("state:" + state + '\n');
+        outToClient.writeBytes(state + '\n');
     }
 }
