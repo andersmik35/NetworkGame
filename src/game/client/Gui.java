@@ -187,8 +187,10 @@ public class Gui extends Application {
     }
 
     public static void updateGui(PlayerUpdate[] players) {
+        for (PlayerUpdate p : Players) {
+            removeObjectOnScreen(p.getPos());
+        }
         for (PlayerUpdate p : players) {
-            removeObjectOnScreen(p.getOldPos());
             placePlayerOnScreen(p.getPos(), p.getDirection());
         }
 

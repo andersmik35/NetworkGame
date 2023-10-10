@@ -77,19 +77,15 @@ public class TCPClient extends Thread {
             String[] playerInfo = player.split(":");
 
             String name = playerInfo[0];
-            String direction = playerInfo[5];
+            String direction = playerInfo[3];
 
-            int oldX = Integer.parseInt(playerInfo[1]);
-            int oldY = Integer.parseInt(playerInfo[2]);
-            Pair oldPos = new Pair(oldX, oldY);
-
-            int newX = Integer.parseInt(playerInfo[3]);
-            int newY = Integer.parseInt(playerInfo[4]);
+            int newX = Integer.parseInt(playerInfo[1]);
+            int newY = Integer.parseInt(playerInfo[2]);
             Pair newPos = new Pair(newX, newY);
 
-            int points = Integer.parseInt(playerInfo[6]);
+            int points = Integer.parseInt(playerInfo[4]);
 
-            updates[i] = new PlayerUpdate(name, oldPos, newPos, direction, points);
+            updates[i] = new PlayerUpdate(name, newPos, direction, points);
         }
 
         if (treasure.length > 1) {

@@ -14,11 +14,14 @@ import java.util.Random;
 public class GameLogic {
     private static GameLogic instance;
 
+    private final static int POINTS_TO_WIN = 100;
+    // Add points for each action
     private final static int TREASURE_POINTS = 10;
     private final static int PLAYER_KILL_POINTS = 5;
-    private final static int PLAYER_DEATH_POINTS = -5;
-    private final static int WALL_POINTS = -1;
-    private final static int POINTS_TO_WIN = 100;
+
+    // Remove points for each action
+    private final static int PLAYER_DEATH_POINTS = 5;
+    private final static int WALL_POINTS = 1;
 
     private GameLogic() {
         instance = this;
@@ -69,8 +72,6 @@ public class GameLogic {
         me.setDirection(direction);
         int x = me.getXpos(), y = me.getYpos();
 
-        Pair oldPos;
-
         if (isTreasure(x + deltaX, y + deltaY)) {
             me.addPoints(TREASURE_POINTS);
             treasure = null;
@@ -85,19 +86,14 @@ public class GameLogic {
             if (other != null) {
                 me.addPoints(PLAYER_KILL_POINTS);
                 //update the other player
-                other.addPoints(PLAYER_DEATH_POINTS);
+                other.takePoints(PLAYER_DEATH_POINTS);
                 Pair pa = getRandomFreePosition();
-                oldPos = new Pair(x + deltaX, y + deltaY);
 
                 other.setLocation(pa);
-                other.setOldLoc(oldPos);
             }
 
-            oldPos = me.getLocation();
             Pair newpos = new Pair(x + deltaX, y + deltaY);
-
             me.setLocation(newpos);
-            me.setOldLoc(oldPos);
         }
 
         if (hasWon(me)) {
@@ -105,7 +101,6 @@ public class GameLogic {
             return;
         }
 
-        // Send besked til spillere om at spilleren er flyttet
         sendState();
     }
 
@@ -113,7 +108,7 @@ public class GameLogic {
         return treasure != null && treasure.getX() == i && treasure.getY() == i1;
     }
 
-    private void sendState() {
+    private synchronized void sendState() {
         StringBuilder state = new StringBuilder();
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
@@ -130,7 +125,7 @@ public class GameLogic {
             state.append(treasure.getX()).append(":").append(treasure.getY());
         }
 
-        ClientHandler.sendStateToAll("state:" + state.toString());
+        ClientHandler.sendStateToAll("state:" + state);
     }
 
     public Player getPlayerAt(int x, int y) {

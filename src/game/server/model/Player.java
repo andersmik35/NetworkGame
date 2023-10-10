@@ -42,8 +42,12 @@ public class Player {
         point += p;
     }
 
+    public void takePoints(int p) {
+        point -= p;
+    }
+
     public String serializePlayer() {
-        return "{" + name + ":" + oldLoc + ":" + location + ":" + direction + ":" + point + "}";
+        return "{" + name + ":" + location + ":" + direction + ":" + point + "}";
     }
 
     public String toString() {
@@ -57,4 +61,5 @@ public class Player {
     public int getPoints() {
         return point;
     }
+
 }

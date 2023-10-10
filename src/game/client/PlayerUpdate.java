@@ -2,14 +2,13 @@ package game.client;
 
 public class PlayerUpdate {
     private String name;
-    private Pair oldPos, newPos;
+    private Pair newPos;
     private String direction;
     private int points;
 
-    public PlayerUpdate(String name, Pair oldPos, Pair newPos, String direction, int points) {
+    public PlayerUpdate(String name, Pair newPos, String direction, int points) {
         this.name = name;
         this.newPos = newPos;
-        this.oldPos = oldPos;
         this.direction = direction;
         this.points = points;
     }
@@ -27,7 +26,7 @@ public class PlayerUpdate {
         return name + ":   " + points;
     }
 
-    public Pair getOldPos() {
-        return oldPos;
+    public String getName() {
+        return name;
     }
 }
