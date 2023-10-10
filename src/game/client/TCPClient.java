@@ -62,7 +62,7 @@ public class TCPClient extends Thread {
         }
     }
 
-    private void updateGui(String serializedData) {
+    private synchronized void updateGui(String serializedData) {
         String[] players = serializedData.split(",");
         PlayerUpdate[] updates = new PlayerUpdate[players.length];
 

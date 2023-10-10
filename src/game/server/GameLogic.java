@@ -96,12 +96,11 @@ public class GameLogic {
             me.setLocation(newpos);
         }
 
+        sendState();
+
         if (hasWon(me)) {
             ClientHandler.sendStateToAll("WINNER:" + me.getName());
-            return;
         }
-
-        sendState();
     }
 
     private boolean isTreasure(int i, int i1) {
